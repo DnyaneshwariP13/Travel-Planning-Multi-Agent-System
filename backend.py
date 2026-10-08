@@ -43,7 +43,9 @@ if not GROQ_API_KEY:
 # LLM
 llm=ChatGroq(
     model="qwen/qwen3.8-27b",
-    api_key=GROQ_API_KEY # type: ignore
+    api_key=GROQ_API_KEY, # type: ignore
+    max_tokens=900,
+    temperature=0.3# type: ignore
     )
 
 #graph state
@@ -80,15 +82,25 @@ def hotel_agent(state:TravelState):
 def itinerary_agent(state:TravelState):
     prompt=f"""
 
-    You are a travel assistant. You have been given the following information about flights and hotels for a user's travel query. 
-    Create a detailed travel itinerary based on the provided information.:
+    Create a practical travel itinerary using the information below.
 
-    User Query: {state['user_query']}
-    Flight Results: {state['flight_result']}
-    Hotel Results: {state['hotel_result']}
+    User request:
+    {state["user_query"]}
 
-    Make the itinerary practical,informative, engaging, budget aware and easy to follow. Include details such as flight timings, hotel amenities, and any other relevant information that would enhance the user's travel experience.
-    
+    Flight information:
+    {state["flight_result"]}
+
+    Hotel information:
+    {state["hotel_result"]}
+
+    Requirements:
+    - Create a day-by-day itinerary.
+    - Include major sightseeing activities.
+    - Consider travel time between places.
+    - Keep the plan realistic and budget-aware.
+    - Mention useful hotel/flight details when available.
+    - Do not invent unavailable flight prices or hotel information.
+        
     """
     response=llm.invoke([
         SystemMessage(content="You are a expert travel assistant that creates detailed travel itineraries based on flight and hotel information."),
@@ -103,30 +115,36 @@ def itinerary_agent(state:TravelState):
 
 def final_agent(state:TravelState):
     prompt=f"""
-    You are a travel assistant. You have been given the following information about flights, hotels, and a detailed itinerary for a user's travel query. 
-    Create a final response that is engaging, informative, and easy to understand. Make sure to highlight the key points from the itinerary and provide any additional tips or recommendations that would enhance the user's travel experience.
+    Create the final travel plan for the user.
 
-    User Query: {state['user_query']}
-    Flight Results: {state['flight_result']}
-    Hotel Results: {state['hotel_result']}
-    Itinerary: {state['itinerary']}
+        User request:
+        {state["user_query"]}
 
-    Format the final answer beautifully using these sections:
+        Flights:
+        {state["flight_result"]}
 
-        1. Trip Summary
-        2. Flight Information
-        3. Hotel Suggestions
-        4. Weather Information
-        5. Day-by-Day Itinerary
-        6. Estimated Budget
-        7. Final Recommendations
+        Hotels:
+        {state["hotel_result"]}
 
-    Important:
-    - Be clear and practical.
-    - Mention that live flight API may not provide ticket prices if pricing is unavailable.
-    - Include weather-based travel advice.
-    - Keep the response useful for real travel planning.
+        Itinerary:
+        {state["itinerary"]}
 
+        Format the response using:
+
+        # Trip Summary
+        # Flight Information
+        # Hotel Suggestions
+        # Weather Information
+        # Day-by-Day Itinerary
+        # Estimated Budget
+        # Final Recommendations
+
+        Rules:
+        - Be practical and concise.
+        - Do not invent flight prices.
+        - Clearly state when live pricing is unavailable.
+        - Include weather/travel advice only when supported by available information.
+        - Prefer useful information over unnecessary explanation.
     """
     response=llm.invoke([
         SystemMessage(content="You are a expert travel assistant that creates final responses based on flight, hotel and itinerary information."),
@@ -178,7 +196,7 @@ travel_graph=graph.compile(checkpointer=checkpointer)
 #function for fastapi
 def run_travel_agent(user_input:str, thread_id:str | None=None):
     if not thread_id:
-        thread_id=f"user_{uuid.uuid4.hex}"
+        thread_id=f"user_{uuid.uuid4().hex}"
 
     config={
         "configurable":{
@@ -205,8 +223,8 @@ def run_travel_agent(user_input:str, thread_id:str | None=None):
     return{
         "thread_id":thread_id,
         "answer":final_answer,
-        "flight_results":result.get("flight_results",""),
-        "hotel_results":result.get("hotel_results",""),
-        "intinerary":result.get("itinerary",""),
+        "flight_results":result.get("flight_result",""),
+        "hotel_results":result.get("hotel_result",""),
+        "itinerary":result.get("itinerary",""),
         "llm_calls":result.get("llm_calls",0),
     }

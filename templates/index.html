@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Bhatkanti AI — AI-powered multi-agent travel planning assistant."
+    >
+
+    <title>Bhatkanti AI — Your AI Travel Companion</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         BACKGROUND
+         ===================================================== -->
+
+    <div class="page-bg">
+        <div class="gradient-circle circle-1"></div>
+        <div class="gradient-circle circle-2"></div>
+        <div class="gradient-circle circle-3"></div>
+    </div>
+
+
+    <!-- =====================================================
+         MAIN APPLICATION
+         ===================================================== -->
+
+    <main class="app-container">
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section class="hero-section">
+
+            <div class="badge">
+                ✦ Bhatkanti AI
+                <span>•</span>
+                Your Intelligent Travel Companion
+            </div>
+
+            <h1>
+                Where Will<br>
+                You Go Next?
+            </h1>
+
+            <p>
+                Tell Bhatkanti AI where you want to go, and let your
+                intelligent travel assistant create a complete journey
+                with flights, stays, sightseeing and a personalized itinerary.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             PLANNER CARD
+             ================================================= -->
+
+        <section class="planner-card">
+
+            <div class="card-header">
+
+                <div>
+                    <h2>
+                        ✦ Design your journey
+                    </h2>
+
+                    <p>
+                        Describe your dream trip and let Bhatkanti AI
+                        handle the planning.
+                    </p>
+                </div>
+
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    AI Online
+                </div>
+
+            </div>
+
+
+            <!-- INPUT AREA -->
+
+            <div class="input-area">
+
+                <textarea
+                    id="userInput"
+                    placeholder="Plan a complete 7 days Japan trip including flights, hotels and sightseeing under 2 lakhs..."
+                ></textarea>
+
+                <button
+                    id="sendBtn"
+                    onclick="sendMessage()"
+                >
+                    <span id="btnText">
+                        Generate Plan
+                    </span>
+
+                    <span
+                        id="btnLoader"
+                        class="loader hidden"
+                    ></span>
+                </button>
+
+            </div>
+
+
+            <!-- QUICK PROMPTS -->
+
+            <div class="quick-prompts">
+
+                <button
+                    onclick="setPrompt('Plan a complete 7 days Japan trip from Bangladesh including flights, hotels and sightseeing under 2 lakhs.')"
+                >
+                    🇯🇵 Japan Trip
+                </button>
+
+                <button
+                    onclick="setPrompt('Plan a 5 days Dubai trip from Dhaka with flights, hotels and sightseeing.')"
+                >
+                    🌆 Dubai Trip
+                </button>
+
+                <button
+                    onclick="setPrompt('Plan a 7 days Thailand trip from Bangladesh with budget hotels and sightseeing.')"
+                >
+                    🌴 Thailand Trip
+                </button>
+
+                <button
+                    onclick="setPrompt('Give me all country flight info.')"
+                >
+                    ✈ Global Flights
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RESULT SECTION
+             ================================================= -->
+
+        <section
+            id="resultSection"
+            class="result-section hidden"
+        >
+
+            <div class="result-header">
+
+                <div>
+
+                    <h2>
+                        ✦ Your Bhatkanti Journey
+                    </h2>
+
+                    <p id="threadInfo">
+                        Thread ID: -
+                    </p>
+
+                </div>
+
+
+                <div class="result-actions">
+
+                    <button
+                        class="copy-btn"
+                        onclick="copyResult()"
+                    >
+                        Copy
+                    </button>
+
+                    <button
+                        class="download-btn"
+                        onclick="downloadPDF()"
+                    >
+                        Download PDF
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PDF CONTENT -->
+
+            <div
+                id="pdfContent"
+                class="pdf-content"
+            >
+
+                <h1 class="pdf-title">
+                    Bhatkanti AI Travel Plan
+                </h1>
+
+                <div
+                    id="resultBox"
+                    class="result-box"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ERROR
+             ================================================= -->
+
+        <section
+            id="errorBox"
+            class="error-box hidden"
+        ></section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer>
+        Bhatkanti AI · Powered by FastAPI · LangGraph · Groq ·
+        PostgreSQL · Tavily · AviationStack
+    </footer>
+
+
+    <!-- =====================================================
+         MARKDOWN RENDERER
+         ===================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+    ></script>
+
+
+    <!-- =====================================================
+         PDF DOWNLOAD
+         ===================================================== -->
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    ></script>
+
+
+    <!-- =====================================================
+         APPLICATION JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        src="/static/script.js"
+    ></script>
+
+</body>
+
+</html>
