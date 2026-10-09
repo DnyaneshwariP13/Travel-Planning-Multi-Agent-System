@@ -1,3 +1,8 @@
+'''
+
+            PHASE 1 Testing
+
+
 from tools.tavily_tool import tavily_search
 from tools.flight_tool import search_flights
 from backend import run_travel_agent
@@ -15,3 +20,15 @@ res=run_travel_agent(
 print("\n FINAL RESPONSE: \n")
 print(res['answer'])
 
+
+'''
+import asyncio
+from tools.mcp_client_test import get_all_tools, tavily_mcp_search
+
+if __name__=="__main__":
+    #this is asynchronous funtion so to run it we need asyncio
+
+    #asyncio.run(get_all_tools())
+    #query="latest news about AI"
+    #asyncio.run(tavily_mcp_search(query)) # type: ignore
+    asyncio.run(get_all_tools())
